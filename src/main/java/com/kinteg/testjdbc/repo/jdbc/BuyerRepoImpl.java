@@ -31,7 +31,7 @@ public class BuyerRepoImpl implements BuyerRepo {
                     .token(resultSet.getInt("token"))
                     .build());
 
-    private final ResultSetExtractor<Optional<Buyer>> EXTRACTOR_ACCOUNT =
+    private final ResultSetExtractor<Optional<Buyer>> EXTRACTOR_BUYER =
             RSExtractor.singletonOptionalExtractor(MAPPER_BUYER);
 
     public BuyerRepoImpl(JdbcTemplate template) {
@@ -45,7 +45,7 @@ public class BuyerRepoImpl implements BuyerRepo {
 
     @Override
     public Optional<Buyer> findById(Long id) {
-        return template.query(FIND_BY_ID, EXTRACTOR_ACCOUNT, id);
+        return template.query(FIND_BY_ID, EXTRACTOR_BUYER, id);
     }
 
     @Override
