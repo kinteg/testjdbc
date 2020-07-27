@@ -22,14 +22,13 @@ public class BuyerRepoImpl implements BuyerRepo {
     private final String SAVE = "insert into buyer (id, name, country, token) values (?, ?, ?, ?)" +
             " on conflict do nothing";
 
-    private static final RowMapper<Buyer> MAPPER_BUYER =
-            ((resultSet, i) -> Buyer
-                    .builder()
-                    .id(resultSet.getLong("id"))
-                    .name(resultSet.getString("name"))
-                    .country(resultSet.getString("country"))
-                    .token(resultSet.getInt("token"))
-                    .build());
+    private static final RowMapper<Buyer> MAPPER_BUYER = ((resultSet, i) -> Buyer
+            .builder()
+            .id(resultSet.getLong("id"))
+            .name(resultSet.getString("name"))
+            .country(resultSet.getString("country"))
+            .token(resultSet.getInt("token"))
+            .build());
 
     private final ResultSetExtractor<Optional<Buyer>> EXTRACTOR_BUYER =
             RSExtractor.singletonOptionalExtractor(MAPPER_BUYER);
@@ -40,7 +39,7 @@ public class BuyerRepoImpl implements BuyerRepo {
 
     @Override
     public Iterable<Buyer> findAll() {
-        return template.query(FIND_ALL, this::mapRowToBuyer);
+        return template.query(FIND_ALL, MAPPER_BUYER);
     }
 
     @Override
@@ -53,17 +52,7 @@ public class BuyerRepoImpl implements BuyerRepo {
         template.update(SAVE,
                 buyer.getId(), buyer.getName(), buyer.getCountry(), buyer.getToken());
 
-        return Optional.of(buyer);
+        return findById(buyer.getId());
     }
 
-    private Buyer mapRowToBuyer(ResultSet resultSet, int rowNum) throws SQLException {
-        return
-                Buyer
-                        .builder()
-                        .id(resultSet.getLong("id"))
-                        .name(resultSet.getString("name"))
-                        .country(resultSet.getString("country"))
-                        .token(resultSet.getInt("token"))
-                        .build();
-    }
 }
