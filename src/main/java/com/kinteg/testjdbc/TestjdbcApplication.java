@@ -21,6 +21,11 @@ public class TestjdbcApplication {
         repo.save(new Buyer(3L, "Vova3", "Rus", 324327854)).ifPresent(System.out::println);
         repo.save(new Buyer(4L, "Vova4", "Rus", 324327854)).ifPresent(System.out::println);
         repo.save(new Buyer(5L, "Vova5", "Rus", 324327854)).ifPresent(System.out::println);
+
+        try {
+            repo.failSave(new Buyer(6L, "Vova6", "Rus", 324327854)).ifPresent(System.out::println);
+        } catch (RuntimeException ignored) {}
+
         System.out.println("-------------------------------------------------------------------------------------");
         repo.findById(1L).ifPresent(System.out::println);
         repo.findById(2L).ifPresent(System.out::println);

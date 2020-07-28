@@ -3,16 +3,20 @@ package com.kinteg.testjdbc.repo.jdbc;
 import com.kinteg.testjdbc.model.Buyer;
 import com.kinteg.testjdbc.repo.BuyerRepo;
 import com.kinteg.testjdbc.repo.RSExtractor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
 @Repository
+@Slf4j
 public class BuyerRepoImpl implements BuyerRepo {
 
     private final JdbcTemplate template;
@@ -53,6 +57,16 @@ public class BuyerRepoImpl implements BuyerRepo {
                 buyer.getId(), buyer.getName(), buyer.getCountry(), buyer.getToken());
 
         return findById(buyer.getId());
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class, propagation = Propagation.REQUIRED)
+    public Optional<Buyer> failSave(Buyer buyer) {
+        template.update(SAVE,
+                buyer.getId(), buyer.getName(), buyer.getCountry(), buyer.getToken());
+
+        log.info("Before RuntimeException: " + findById(buyer.getId()));
+        throw new RuntimeException();
     }
 
 }

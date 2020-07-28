@@ -14,4 +14,6 @@ public interface BuyerRepo {
 
     Optional<Buyer> save(Buyer buyer);
 
+    Optional<Buyer> failSave(Buyer buyer);
+
 }
